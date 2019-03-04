@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <meta name="keywords" content="Kotlin 类, Espoir">
     <meta name="description" content="类在 Kotlin 中的一个类可以有一个主构造函数以及一个或多个次构造函数。  
-主构造函数：class Person(firstName: String) { ... }
- 主构造函数不能包含任何的代码。初始化的代码可以放到以 init ">
+主构造函数：1class Person(firstName: String) &amp;#123; ... &amp;#125;
+ 主构造函数不能包含任何的代码。初始化的代码">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -398,135 +398,30 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><p>在 Kotlin 中的一个类可以有一个主构造函数以及一个或多个次构造函数。  </p>
-<h3 id="主构造函数："><a href="#主构造函数：" class="headerlink" title="主构造函数："></a>主构造函数：</h3><pre><code>class Person(firstName: String) { ... }
-</code></pre><p> 主构造函数不能包含任何的代码。初始化的代码可以放到以 init 关键字作为前缀的初始化块（initializer blocks）中。</p>
-<p> 在实例初始化期间，初始化块按照它们出现在类体中的顺序执行，与属性初始化器交织在一起：</p>
-<pre><code>class InitOrderDemo(name: String) {
-    val firstProperty = &quot;First property: $name&quot;.also(::println)
-
-    init {
-        println(&quot;First initializer block that prints ${name}&quot;)
-    }
-
-    val secondProperty = &quot;Second property: ${name.length}&quot;.also(::println)
-
-    init {
-        println(&quot;Second initializer block that prints ${name.length}&quot;)
-    }
-}
-</code></pre><h3 id="次构造函数"><a href="#次构造函数" class="headerlink" title="次构造函数"></a>次构造函数</h3><p> 类也可以声明前缀有 constructor 的次构造函数：</p>
-<pre><code>class Person {
-    constructor(parent: Person) {
-        parent.children.add(this)
-    }
-}
-</code></pre><p>如果类有一个主构造函数，每个次构造函数需要委托给主构造函数， 可以直接委托或者通过别的次构造函数间接委托。委托到同一个类的另一个构造函数用 this 关键字即可：</p>
-<pre><code>class Person(val name: String) {
-    constructor(name: String, parent: Person) : this(name) {
-        parent.children.add(this)
-    }
-}
-</code></pre><p>请注意，初始化块中的代码实际上会成为主构造函数的一部分。委托给主构造函数会作为次构造函数的第一条语句，因此所有初始化块中的代码都会在次构造函数体之前执行。即使该类没有主构造函数，这种委托仍会隐式发生，并且仍会执行初始化块：</p>
-<pre><code>class Constructors {
-    init {
-        println(&quot;Init block&quot;)
-    }
-
-    constructor(i: Int) {
-        println(&quot;Constructor&quot;)
-    }
-}
-</code></pre><p>结果：<br>Init block<br>Constructor</p>
-<h2 id="创建类的实例"><a href="#创建类的实例" class="headerlink" title="创建类的实例"></a>创建类的实例</h2><pre><code>val invoice = Invoice()
-
-val customer = Customer(&quot;Joe Smith&quot;)
-</code></pre><p>注意 Kotlin 并没有 new 关键字。</p>
-<h2 id="嵌套类与内部类"><a href="#嵌套类与内部类" class="headerlink" title="嵌套类与内部类"></a>嵌套类与内部类</h2><p>类可以嵌套在其他类中：</p>
-<pre><code>class Outer {
-    private val bar: Int = 1
-    class Nested {
-        fun foo() = 2
-    }
-}
-
-val demo = Outer.Nested().foo() // == 2
-</code></pre><h2 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h2><p>类可以标记为 inner 以便能够访问外部类的成员。内部类会带有一个对外部类的对象的引用：</p>
-<pre><code>class Outer {
-    private val bar: Int = 1
-    inner class Inner {
-        fun foo() = bar
-    }
-}
-
-val demo = Outer().Inner().foo() // == 1
-</code></pre><h2 id="匿名内部类"><a href="#匿名内部类" class="headerlink" title="匿名内部类"></a>匿名内部类</h2><p>使用对象表达式创建匿名内部类实例：</p>
-<pre><code>window.addMouseListener(object : MouseAdapter() {
-
-    override fun mouseClicked(e: MouseEvent) { …… }
-
-    override fun mouseEntered(e: MouseEvent) { …… }
-})
-</code></pre><h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>在 Kotlin 中所有类都有一个共同的超类 Any<br>要声明一个显式的超类型，我们把类型放到类头的冒号之后：  </p>
-<pre><code>open class Base(p: Int)
-
-class Derived(p: Int) : Base(p)
-</code></pre><p>如果派生类有一个主构造函数，其基类型可以（并且必须） 用基类的主构造函数参数就地初始化。</p>
-<p>如果类没有主构造函数，那么每个次构造函数必须使用 super 关键字初始化其基类型，或委托给另一个构造函数做到这一点。 注意，在这种情况下，不同的次构造函数可以调用基类型的不同的构造函数：</p>
-<pre><code>class MyView : View {
-    constructor(ctx: Context) : super(ctx)
-
-    constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs)
-}
-</code></pre><h2 id="覆盖方法"><a href="#覆盖方法" class="headerlink" title="覆盖方法"></a>覆盖方法</h2><p>Kotlin 对于可覆盖的成员（我们称之为开放）以及覆盖后的成员需要显式修饰符：</p>
-<pre><code>open class Base {
-    open fun v() { ... }
-    fun nv() { ... }
-}
-class Derived() : Base() {
-    override fun v() { ... }
-}
-</code></pre><p>Derived.v() 函数上必须加上 override 修饰符。如果没写，编译器将会报错。 如果函数没有标注 open 如 Base.nv()，那么子类中不允许定义相同签名的函数， 不论加不加 override。将 open 修饰符添加到 final 类（即没有 open 的类）的成员上不起作用。</p>
-<p>标记为 override 的成员本身是开放的，也就是说，它可以在子类中覆盖。如果你想禁止再次覆盖，使用 final 关键字：</p>
-<pre><code>open class AnotherDerived() : Base() {
-    final override fun v() { ... }
-}
-</code></pre><h2 id="覆盖属性"><a href="#覆盖属性" class="headerlink" title="覆盖属性"></a>覆盖属性</h2><p>属性覆盖与方法覆盖类似；在超类中声明然后在派生类中重新声明的属性必须以 override 开头，并且它们必须具有兼容的类型。每个声明的属性可以由具有初始化器的属性或者具有 getter 方法的属性覆盖。</p>
-<pre><code>open class Foo {
-    open val x: Int get() { …… }
-}
-
-class Bar1 : Foo() {
-    override val x: Int = ……
-}
-</code></pre><p>你也可以用一个 var 属性覆盖一个 val 属性，但反之则不行。这是允许的，因为一个 val 属性本质上声明了一个 getter 方法，而将其覆盖为 var 只是在子类中额外声明一个 setter 方法。</p>
-<h2 id="派生类初始化顺序"><a href="#派生类初始化顺序" class="headerlink" title="派生类初始化顺序"></a>派生类初始化顺序</h2><p>在构造派生类的新实例的过程中，第一步完成其基类的初始化（在之前只有对基类构造函数参数的求值），因此发生在派生类的初始化逻辑运行之前。</p>
-<pre><code>open class Base(val name: String) {
-
-    init { println(&quot;Initializing Base&quot;) }
-
-    open val size: Int = 
-        name.length.also { println(&quot;Initializing size in Base: $it&quot;) }
-}
-
-class Derived(
-    name: String,
-    val lastName: String
-) : Base(name.capitalize().also { println(&quot;Argument for Base: $it&quot;) }) { 
-
-    init { println(&quot;Initializing Derived&quot;) }
-
-    override val size: Int =
-        (super.size + lastName.length).also { println(&quot;Initializing size in Derived: $it&quot;) }
-}
-
-结果：
-Constructing Derived(&quot;hello&quot;, &quot;world&quot;)
-Argument for Base: Hello
-Initializing Base
-Initializing size in Base: 5
-Initializing Derived
-Initializing size in Derived: 10
-</code></pre><p>这意味着，基类构造函数执行时，派生类中声明或覆盖的属性都还没有初始化。如果在基类初始化逻辑中（直接或通过另一个覆盖的 open 成员的实现间接）使用了任何一个这种属性，那么都可能导致不正确的行为或运行时故障。设计一个基类时，应该避免在构造函数、属性初始化器以及 init 块中使用 open 成员。</p>
+<h3 id="主构造函数："><a href="#主构造函数：" class="headerlink" title="主构造函数："></a>主构造函数：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class Person(firstName: String) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<p> 主构造函数不能包含任何的代码。初始化的代码可以放到以 init 关键字作为前缀的初始化块（initializer blocks）中。</p>
+<p> 在实例初始化期间，初始化块按照它们出现在类体中的顺序执行，与属性初始化器交织在一起：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class InitOrderDemo(name: String) &#123;</span><br><span class="line">    val firstProperty = &quot;First property: $name&quot;.also(::println)</span><br><span class="line">    </span><br><span class="line">    init &#123;</span><br><span class="line">        println(&quot;First initializer block that prints $&#123;name&#125;&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    val secondProperty = &quot;Second property: $&#123;name.length&#125;&quot;.also(::println)</span><br><span class="line">    </span><br><span class="line">    init &#123;</span><br><span class="line">        println(&quot;Second initializer block that prints $&#123;name.length&#125;&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="次构造函数"><a href="#次构造函数" class="headerlink" title="次构造函数"></a>次构造函数</h3><p> 类也可以声明前缀有 constructor 的次构造函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class Person &#123;</span><br><span class="line">    constructor(parent: Person) &#123;</span><br><span class="line">        parent.children.add(this)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果类有一个主构造函数，每个次构造函数需要委托给主构造函数， 可以直接委托或者通过别的次构造函数间接委托。委托到同一个类的另一个构造函数用 this 关键字即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class Person(val name: String) &#123;</span><br><span class="line">    constructor(name: String, parent: Person) : this(name) &#123;</span><br><span class="line">        parent.children.add(this)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请注意，初始化块中的代码实际上会成为主构造函数的一部分。委托给主构造函数会作为次构造函数的第一条语句，因此所有初始化块中的代码都会在次构造函数体之前执行。即使该类没有主构造函数，这种委托仍会隐式发生，并且仍会执行初始化块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class Constructors &#123;</span><br><span class="line">    init &#123;</span><br><span class="line">        println(&quot;Init block&quot;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    constructor(i: Int) &#123;</span><br><span class="line">        println(&quot;Constructor&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：<br>Init block<br>Constructor</p>
+<h2 id="创建类的实例"><a href="#创建类的实例" class="headerlink" title="创建类的实例"></a>创建类的实例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val invoice = Invoice()</span><br><span class="line"></span><br><span class="line">val customer = Customer(&quot;Joe Smith&quot;)</span><br></pre></td></tr></table></figure>
+<p>注意 Kotlin 并没有 new 关键字。</p>
+<h2 id="嵌套类与内部类"><a href="#嵌套类与内部类" class="headerlink" title="嵌套类与内部类"></a>嵌套类与内部类</h2><p>类可以嵌套在其他类中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Outer &#123;</span><br><span class="line">    private val bar: Int = 1</span><br><span class="line">    class Nested &#123;</span><br><span class="line">        fun foo() = 2</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">val demo = Outer.Nested().foo() // == 2</span><br></pre></td></tr></table></figure></p>
+<h2 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h2><p>类可以标记为 inner 以便能够访问外部类的成员。内部类会带有一个对外部类的对象的引用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Outer &#123;</span><br><span class="line">    private val bar: Int = 1</span><br><span class="line">    inner class Inner &#123;</span><br><span class="line">        fun foo() = bar</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">val demo = Outer().Inner().foo() // == 1</span><br></pre></td></tr></table></figure></p>
+<h2 id="匿名内部类"><a href="#匿名内部类" class="headerlink" title="匿名内部类"></a>匿名内部类</h2><p>使用对象表达式创建匿名内部类实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">window.addMouseListener(object : MouseAdapter() &#123;</span><br><span class="line"></span><br><span class="line">    override fun mouseClicked(e: MouseEvent) &#123; …… &#125;</span><br><span class="line"></span><br><span class="line">    override fun mouseEntered(e: MouseEvent) &#123; …… &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>在 Kotlin 中所有类都有一个共同的超类 Any<br>要声明一个显式的超类型，我们把类型放到类头的冒号之后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">open class Base(p: Int)</span><br><span class="line"></span><br><span class="line">class Derived(p: Int) : Base(p)</span><br></pre></td></tr></table></figure></p>
+<p>如果派生类有一个主构造函数，其基类型可以（并且必须） 用基类的主构造函数参数就地初始化。</p>
+<p>如果类没有主构造函数，那么每个次构造函数必须使用 super 关键字初始化其基类型，或委托给另一个构造函数做到这一点。 注意，在这种情况下，不同的次构造函数可以调用基类型的不同的构造函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class MyView : View &#123;</span><br><span class="line">    constructor(ctx: Context) : super(ctx)</span><br><span class="line"></span><br><span class="line">    constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="覆盖方法"><a href="#覆盖方法" class="headerlink" title="覆盖方法"></a>覆盖方法</h2><p>Kotlin 对于可覆盖的成员（我们称之为开放）以及覆盖后的成员需要显式修饰符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">open class Base &#123;</span><br><span class="line">    open fun v() &#123; ... &#125;</span><br><span class="line">    fun nv() &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line">class Derived() : Base() &#123;</span><br><span class="line">    override fun v() &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Derived.v() 函数上必须加上 override 修饰符。如果没写，编译器将会报错。 如果函数没有标注 open 如 Base.nv()，那么子类中不允许定义相同签名的函数， 不论加不加 override。将 open 修饰符添加到 final 类（即没有 open 的类）的成员上不起作用。</p>
+<p>标记为 override 的成员本身是开放的，也就是说，它可以在子类中覆盖。如果你想禁止再次覆盖，使用 final 关键字：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">open class AnotherDerived() : Base() &#123;</span><br><span class="line">    final override fun v() &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="覆盖属性"><a href="#覆盖属性" class="headerlink" title="覆盖属性"></a>覆盖属性</h2><p>属性覆盖与方法覆盖类似；在超类中声明然后在派生类中重新声明的属性必须以 override 开头，并且它们必须具有兼容的类型。每个声明的属性可以由具有初始化器的属性或者具有 getter 方法的属性覆盖。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">open class Foo &#123;</span><br><span class="line">    open val x: Int get() &#123; …… &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Bar1 : Foo() &#123;</span><br><span class="line">    override val x: Int = ……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>你也可以用一个 var 属性覆盖一个 val 属性，但反之则不行。这是允许的，因为一个 val 属性本质上声明了一个 getter 方法，而将其覆盖为 var 只是在子类中额外声明一个 setter 方法。</p>
+<h2 id="派生类初始化顺序"><a href="#派生类初始化顺序" class="headerlink" title="派生类初始化顺序"></a>派生类初始化顺序</h2><p>在构造派生类的新实例的过程中，第一步完成其基类的初始化（在之前只有对基类构造函数参数的求值），因此发生在派生类的初始化逻辑运行之前。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">open class Base(val name: String) &#123;</span><br><span class="line"></span><br><span class="line">    init &#123; println(&quot;Initializing Base&quot;) &#125;</span><br><span class="line"></span><br><span class="line">    open val size: Int = </span><br><span class="line">        name.length.also &#123; println(&quot;Initializing size in Base: $it&quot;) &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Derived(</span><br><span class="line">    name: String,</span><br><span class="line">    val lastName: String</span><br><span class="line">) : Base(name.capitalize().also &#123; println(&quot;Argument for Base: $it&quot;) &#125;) &#123; </span><br><span class="line"></span><br><span class="line">    init &#123; println(&quot;Initializing Derived&quot;) &#125;</span><br><span class="line"></span><br><span class="line">    override val size: Int =</span><br><span class="line">        (super.size + lastName.length).also &#123; println(&quot;Initializing size in Derived: $it&quot;) &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">Constructing Derived(&quot;hello&quot;, &quot;world&quot;)</span><br><span class="line">Argument for Base: Hello</span><br><span class="line">Initializing Base</span><br><span class="line">Initializing size in Base: 5</span><br><span class="line">Initializing Derived</span><br><span class="line">Initializing size in Derived: 10</span><br></pre></td></tr></table></figure></p>
+<p>这意味着，基类构造函数执行时，派生类中声明或覆盖的属性都还没有初始化。如果在基类初始化逻辑中（直接或通过另一个覆盖的 open 成员的实现间接）使用了任何一个这种属性，那么都可能导致不正确的行为或运行时故障。设计一个基类时，应该避免在构造函数、属性初始化器以及 init 块中使用 open 成员。</p>
 <h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2>
             </div>
             <hr>
@@ -699,21 +594,19 @@ Initializing size in Derived: 10
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2019/02/28/Hexo操作/">
+                <a href="/2019/02/28/Kotlin 代码实践/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="Hexo 博客操作">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="Kotlin 代码实践">
                         
-                        <span class="card-title">Hexo 博客操作</span>
+                        <span class="card-title">Kotlin 代码实践</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">第一步cd 到 hexo 的目录
-第二步写文章
-第三步执行 hexo g 生成静态文件
-第四步执行 hexo clean &amp;&amp; hexo deploy 部署到 Github
-</div>
+                    <div class="summary">Hello world!让 start() 方法返回字符串 “OK”  
+答案1fun start():String = &quot;OK&quot;
+命名参数函数 joinToString 使用参数的默认声明：1234567//Strin</div>
                     <div class="publish-info">
                         <span class="publish-date">
                             <i class="fa fa-clock-o fa-fw icon-date"></i>2019-02-28
@@ -722,8 +615,8 @@ Initializing size in Derived: 10
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Hexo/" class="post-category" target="_blank">
-                                    Hexo
+                            <a href="/categories/Kotlin/" class="post-category" target="_blank">
+                                    Kotlin
                                 </a>
                             
                             
@@ -733,8 +626,8 @@ Initializing size in Derived: 10
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Hexo/" target="_blank">
-                        <span class="chip bg-color">Hexo</span>
+                    <a href="/tags/Kotlin/" target="_blank">
+                        <span class="chip bg-color">Kotlin</span>
                     </a>
                     
                 </div>
@@ -758,12 +651,8 @@ Initializing size in Derived: 10
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">定义函数带有两个 Int 参数、返回 Int 的函数：
-fun sum(a Int,b:Int):Int{
-    return a+b
-}
-将表达式作为函数体、返回值类型自动推断的函数：
-fun sum(a:Int,b:Int) = a+</div>
+                    <div class="summary">定义函数带有两个 Int 参数、返回 Int 的函数：123fun sum(a Int,b:Int):Int&#123;    return a+b&#125;
+将表达式作为函数体、返回值类型自动推断的函数：1fun sum(a:Int,b</div>
                     <div class="publish-info">
                             <span class="publish-date">
                                 <i class="fa fa-clock-o fa-fw icon-date"></i>2019-02-28

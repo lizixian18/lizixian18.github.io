@@ -1,925 +1,544 @@
-<!DOCTYPE HTML>
+
+<!DOCTYPE html>
 <html lang="">
-
-
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta name="keywords" content="Kotlin 代码实践, Espoir">
-    <meta name="description" content="Hello world!让 start() 方法返回字符串 “OK”  
-答案  
-fun start():String = &amp;quot;OK&amp;quot;
-命名参数函数 joinToString 使用参数的默认声明：
-//String 扩展">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="renderer" content="webkit|ie-stand|ie-comp">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Kotlin 代码实践 | Espoir</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
-
-    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
-    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/matery.css">
-    <link rel="stylesheet" type="text/css" href="/css/my.css">
-    <style type="text/css">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Espoir">
+    <title>Kotlin 代码实践 - Espoir</title>
+    <meta name="author" content="Espoir">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Espoir","sameAs":["https://github.com/lizixian18","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"],"image":"http://pic4.qqmofasi.com/2014/12/01/506_uZNgKWaisBanBs19hGss_square.jpg"},"articleBody":"Hello world!让 start() 方法返回字符串 “OK”  \n\n答案1fun start():String = &quot;OK&quot;\n命名参数函数 joinToString 使用参数的默认声明：1234567//String 扩展函数fun joinToString(    separator: String = &quot;, &quot;,    prefix: String = &quot;&quot;,    postfix: String = &quot;&quot;,    /* ... */): String\n它可以在一系列字符串上调用。 仅指定两个参数使函数 joinOptions（）以JSON格式返回列表（例如，“[a，b，c]”）  \n答案1fun joinOptions(option:Collection&lt;String&gt;) = option.joinToString(prefix=&quot;[&quot;,postfix=&quot;]&quot;)\n##默认参数Java 中有几个 foo() 函数的重载：123456789101112public String foo(String name, int number, boolean toUpperCase) &#123;    return (toUpperCase ? name.toUpperCase() : name) + number;&#125;public String foo(String name, int number) &#123;    return foo(name, number, false);&#125;public String foo(String name, boolean toUpperCase) &#123;    return foo(name, 42, toUpperCase);&#125;public String foo(String name) &#123;    return foo(name, 42);&#125;\n所有这些Java重载都可以用Kotlin中的一个函数替换。 以使用foo编译的代码的方式更改函数foo的声明。 使用默认和命名参数。\n答案123456789fun foo(name:String,number:Int = 42,toUpperCase:Boolean = false) =     if((toUpperCase)name.toUpperCase() else name)+numberfun useFoo() = listOf(    foo(&quot;a&quot;),    foo(&quot;b&quot;,number = 1),    foo(&quot;c&quot;,toUpperCase = true),    foo(name = &quot;d&quot;,number = 2,toUpperCase = true))\nLambda表达式将lambda传递给任何函数以检查集合是否包含偶数。 函数any将谓词作为参数获取，如果至少有一个元素满足谓词，则返回true。\n答案：123fun containsEven(collection:Collection&lt;Int&gt;):Boolean = collection.any&#123;    it % 2 ==0&#125;\n数据类将以下Java代码重写为Kotlin：1234567891011121314151617public class Person &#123;    private final String name;    private final int age;    public Person(String name, int age) &#123;        this.name = name;        this.age = age;    &#125;    public String getName() &#123;        return name;    &#125;    public int getAge() &#123;        return age;    &#125;&#125;\n答案：12345data class Person(val name:String,val age:Int)fun getPeople():List&lt;Person&gt;&#123;    return listOf(Person(&quot;Alice&quot;,29),Person(&quot;Bob&quot;,31))&#125;\n可空类型阅读Kotlin中的null安全和安全调用，并仅使用一个if表达式重写以下Java代码：123456789101112131415public void sendMessageToClient(    @Nullable Client client,    @Nullable String message,    @NotNull Mailer mailer) &#123;    if (client == null || message == null) return;    PersonalInfo personalInfo = client.getPersonalInfo();    if (personalInfo == null) return;    String email = personalInfo.getEmail();    if (email == null) return;    mailer.sendMessage(email, message);&#125;\n答案：123456789101112fun sendMessageToClient(client:Client?,message:String?,mailer:Mailer)&#123;    val email = client?.personalInfo?.email    if(email!=null&amp;&amp;message!=null)&#123;        mailer.sendMessage(email,message)    &#125;&#125;class Client(val personalInfo:PersonalInfo?)class PersonalInfo(val email:String?)interface Mailer&#123;    fun sendMessage(email:String,message:String)&#125;\nSmart casts使用智能转换和表达式重写以下Java代码：12345678910public int eval(Expr expr) &#123;    if (expr instanceof Num) &#123;        return ((Num) expr).getValue();    &#125;    if (expr instanceof Sum) &#123;        Sum sum = (Sum) expr;        return eval(sum.getLeft()) + eval(sum.getRight());    &#125;    throw new IllegalArgumentException(&quot;Unknown expression&quot;);&#125;\n答案：123456fun eval(expr):Int =     when(expr)&#123;        is Num -&gt; expr.value        is Sum -&gt; eval(expr.left)+eval(expr.right)        else -&gt; throw IllegalArgumentException(&quot;Unknown expression&quot;)    &#125;\n","dateCreated":"2019-02-28T11:35:41+08:00","dateModified":"2019-03-05T10:20:34+08:00","datePublished":"2019-02-28T11:35:41+08:00","description":"Hello world!让 start() 方法返回字符串 “OK”  ","headline":"Kotlin 代码实践","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/"},"publisher":{"@type":"Organization","name":"Espoir","sameAs":["https://github.com/lizixian18","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"],"image":"http://pic4.qqmofasi.com/2014/12/01/506_uZNgKWaisBanBs19hGss_square.jpg","logo":{"@type":"ImageObject","url":"http://pic4.qqmofasi.com/2014/12/01/506_uZNgKWaisBanBs19hGss_square.jpg"}},"url":"https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/","keywords":"Kotlin"}</script>
+    <meta name="description" content="Hello world!让 start() 方法返回字符串 “OK”">
+<meta name="keywords" content="Kotlin">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Kotlin 代码实践">
+<meta property="og:url" content="https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/index.html">
+<meta property="og:site_name" content="Espoir">
+<meta property="og:description" content="Hello world!让 start() 方法返回字符串 “OK”">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-03-05T02:20:34.885Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin 代码实践">
+<meta name="twitter:description" content="Hello world!让 start() 方法返回字符串 “OK”">
+    
+    
         
-    </style>
+    
+    
+        <meta property="og:image" content="http://pic4.qqmofasi.com/2014/12/01/506_uZNgKWaisBanBs19hGss_square.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-c4ozcsklz4kht2pebhp44xorvyverh23toayhn7i6ubrpyedak24hv1v0hyd.min.css">
+    <!--STYLES END-->
+    
 
-    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
 
 
-<body>
+    
+        
+            
+        
+    
 
-<header class="navbar-fixed">
-    <nav id="headNav" class="bg-color nav-transparent">
-        <div id="navContainer" class="nav-wrapper container">
-            <div class="brand-logo">
-                <a href="/" class="waves-effect waves-light">
-                    
-                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
-                    
-                    <span class="logo-span">Espoir</span>
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Espoir</a>
+    </div>
+    
+        
+            <a class="header-right-picture " href="#about">
+        
+        
+            <img class="header-picture" src="http://pic4.qqmofasi.com/2014/12/01/506_uZNgKWaisBanBs19hGss_square.jpg" alt="Bild des Autors">
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="http://pic4.qqmofasi.com/2014/12/01/506_uZNgKWaisBanBs19hGss_square.jpg" alt="Bild des Autors">
                 </a>
+                <h4 class="sidebar-profile-name">Espoir</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
             </div>
-            
-
-<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
-<ul class="right">
-    
-    <li class="hide-on-med-and-down">
-        <a href="/" class="waves-effect waves-light">
-            
-            <i class="fa fa-home"></i>
-            
-            <span>Index</span>
-        </a>
-    </li>
-    
-    <li class="hide-on-med-and-down">
-        <a href="/tags" class="waves-effect waves-light">
-            
-            <i class="fa fa-tags"></i>
-            
-            <span>Tags</span>
-        </a>
-    </li>
-    
-    <li class="hide-on-med-and-down">
-        <a href="/categories" class="waves-effect waves-light">
-            
-            <i class="fa fa-bookmark"></i>
-            
-            <span>Categories</span>
-        </a>
-    </li>
-    
-    <li class="hide-on-med-and-down">
-        <a href="/archives" class="waves-effect waves-light">
-            
-            <i class="fa fa-archive"></i>
-            
-            <span>Archives</span>
-        </a>
-    </li>
-    
-    <li class="hide-on-med-and-down">
-        <a href="/about" class="waves-effect waves-light">
-            
-            <i class="fa fa-user-circle-o"></i>
-            
-            <span>About</span>
-        </a>
-    </li>
-    
-    <li class="hide-on-med-and-down">
-        <a href="/friends" class="waves-effect waves-light">
-            
-            <i class="fa fa-address-book"></i>
-            
-            <span>Friends</span>
-        </a>
-    </li>
-    
-    <li>
-        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
-            <i id="searchIcon" class="fa fa-search" title="Search"></i>
-        </a>
-    </li>
-</ul>
-
-<div id="mobile-nav" class="side-nav sidenav">
-
-    <div class="mobile-head bg-color">
         
-        <img src="/medias/logo.png" class="logo-img circle responsive-img">
         
-        <div class="logo-name">Espoir</div>
-        <div class="logo-desc">
+            <ul class="sidebar-buttons">
             
-            我们的任务,不是去发现一些别人还没有发现的东西,而是针对所有人都看见的东西做一些从未有过的思考
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="Home">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
             
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="Kategorien">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Kategorien</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="Tags">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" title="Archiv">
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archiv</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link open-algolia-search" href="#search" title="Suche">
+                    
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Suche</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="Über">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Über</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/lizixian18" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="noopener" title="Stack Overflow">
+                    
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter">
+                    
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="noopener" title="Facebook">
+                    
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="noopener" title="Google Plus">
+                    
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google Plus</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="noopener" title="LinkedIn">
+                    
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/mailto" title="E-Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">E-Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" title="RSS">
+                    
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Kotlin 代码实践
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2019-02-28T11:35:41+08:00">
+	
+		    28 Feb 2019
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Kotlin/">Kotlin</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <h2 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello world!"></a>Hello world!</h2><p>让 start() 方法返回字符串 “OK”  </p>
+<a id="more"></a>
+<p>答案<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fun start():String = &quot;OK&quot;</span><br></pre></td></tr></table></figure></p>
+<h2 id="命名参数"><a href="#命名参数" class="headerlink" title="命名参数"></a>命名参数</h2><p>函数 joinToString 使用参数的默认声明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//String 扩展函数</span><br><span class="line">fun joinToString(</span><br><span class="line">    separator: String = &quot;, &quot;,</span><br><span class="line">    prefix: String = &quot;&quot;,</span><br><span class="line">    postfix: String = &quot;&quot;,</span><br><span class="line">    /* ... */</span><br><span class="line">): String</span><br></pre></td></tr></table></figure></p>
+<p>它可以在一系列字符串上调用。 仅指定两个参数使函数 joinOptions（）以JSON格式返回列表（例如，“[a，b，c]”）  </p>
+<p>答案<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fun joinOptions(option:Collection&lt;String&gt;) = option.joinToString(prefix=&quot;[&quot;,postfix=&quot;]&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>##默认参数<br>Java 中有几个 foo() 函数的重载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public String foo(String name, int number, boolean toUpperCase) &#123;</span><br><span class="line">    return (toUpperCase ? name.toUpperCase() : name) + number;</span><br><span class="line">&#125;</span><br><span class="line">public String foo(String name, int number) &#123;</span><br><span class="line">    return foo(name, number, false);</span><br><span class="line">&#125;</span><br><span class="line">public String foo(String name, boolean toUpperCase) &#123;</span><br><span class="line">    return foo(name, 42, toUpperCase);</span><br><span class="line">&#125;</span><br><span class="line">public String foo(String name) &#123;</span><br><span class="line">    return foo(name, 42);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所有这些Java重载都可以用Kotlin中的一个函数替换。 以使用foo编译的代码的方式更改函数foo的声明。 使用默认和命名参数。</p>
+<p>答案<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fun foo(name:String,number:Int = 42,toUpperCase:Boolean = false) = </span><br><span class="line">    if((toUpperCase)name.toUpperCase() else name)+number</span><br><span class="line"></span><br><span class="line">fun useFoo() = listOf(</span><br><span class="line">    foo(&quot;a&quot;),</span><br><span class="line">    foo(&quot;b&quot;,number = 1),</span><br><span class="line">    foo(&quot;c&quot;,toUpperCase = true),</span><br><span class="line">    foo(name = &quot;d&quot;,number = 2,toUpperCase = true)</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<h2 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h2><p>将lambda传递给任何函数以检查集合是否包含偶数。 函数any将谓词作为参数获取，如果至少有一个元素满足谓词，则返回true。</p>
+<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fun containsEven(collection:Collection&lt;Int&gt;):Boolean = collection.any&#123;</span><br><span class="line">    it % 2 ==0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="数据类"><a href="#数据类" class="headerlink" title="数据类"></a>数据类</h2><p>将以下Java代码重写为Kotlin：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">    private final String name;</span><br><span class="line">    private final int age;</span><br><span class="line"></span><br><span class="line">    public Person(String name, int age) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">        this.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">data class Person(val name:String,val age:Int)</span><br><span class="line"></span><br><span class="line">fun getPeople():List&lt;Person&gt;&#123;</span><br><span class="line">    return listOf(Person(&quot;Alice&quot;,29),Person(&quot;Bob&quot;,31))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="可空类型"><a href="#可空类型" class="headerlink" title="可空类型"></a>可空类型</h2><p>阅读Kotlin中的null安全和安全调用，并仅使用一个if表达式重写以下Java代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public void sendMessageToClient(</span><br><span class="line">    @Nullable Client client,</span><br><span class="line">    @Nullable String message,</span><br><span class="line">    @NotNull Mailer mailer</span><br><span class="line">) &#123;</span><br><span class="line">    if (client == null || message == null) return;</span><br><span class="line"></span><br><span class="line">    PersonalInfo personalInfo = client.getPersonalInfo();</span><br><span class="line">    if (personalInfo == null) return;</span><br><span class="line"></span><br><span class="line">    String email = personalInfo.getEmail();</span><br><span class="line">    if (email == null) return;</span><br><span class="line"></span><br><span class="line">    mailer.sendMessage(email, message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">fun sendMessageToClient(client:Client?,message:String?,mailer:Mailer)&#123;</span><br><span class="line">    val email = client?.personalInfo?.email</span><br><span class="line">    if(email!=null&amp;&amp;message!=null)&#123;</span><br><span class="line">        mailer.sendMessage(email,message)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Client(val personalInfo:PersonalInfo?)</span><br><span class="line">class PersonalInfo(val email:String?)</span><br><span class="line">interface Mailer&#123;</span><br><span class="line">    fun sendMessage(email:String,message:String)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Smart-casts"><a href="#Smart-casts" class="headerlink" title="Smart casts"></a>Smart casts</h2><p>使用智能转换和表达式重写以下Java代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public int eval(Expr expr) &#123;</span><br><span class="line">    if (expr instanceof Num) &#123;</span><br><span class="line">        return ((Num) expr).getValue();</span><br><span class="line">    &#125;</span><br><span class="line">    if (expr instanceof Sum) &#123;</span><br><span class="line">        Sum sum = (Sum) expr;</span><br><span class="line">        return eval(sum.getLeft()) + eval(sum.getRight());</span><br><span class="line">    &#125;</span><br><span class="line">    throw new IllegalArgumentException(&quot;Unknown expression&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fun eval(expr):Int = </span><br><span class="line">    when(expr)&#123;</span><br><span class="line">        is Num -&gt; expr.value</span><br><span class="line">        is Sum -&gt; eval(expr.left)+eval(expr.right)</span><br><span class="line">        else -&gt; throw IllegalArgumentException(&quot;Unknown expression&quot;)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+
+            
+
         </div>
     </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">GETAGGT IN</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Kotlin/">Kotlin</a>
 
-    
-
-    <ul class="menu-list mobile-menu-list">
+            </div>
         
-        <li>
-            <a href="/" class="waves-effect waves-light">
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
                 
-                <i class="fa fa-fw fa-home"></i>
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/02/28/Hexo操作/" data-tooltip="Hexo 博客操作" aria-label="FRÜHER: Hexo 博客操作">
                 
-                Index
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/02/28/Kotlin 类/" data-tooltip="Kotlin 类" aria-label="NÄCHSTER: Kotlin 类">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
         
-        <li>
-            <a href="/tags" class="waves-effect waves-light">
-                
-                <i class="fa fa-fw fa-tags"></i>
-                
-                Tags
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/" title="Teilen auf Facebook">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/" title="Teilen auf Twitter">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/" title="Teilen auf Google Plus">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
             </a>
         </li>
-        
-        <li>
-            <a href="/categories" class="waves-effect waves-light">
-                
-                <i class="fa fa-fw fa-bookmark"></i>
-                
-                Categories
-            </a>
-        </li>
-        
-        <li>
-            <a href="/archives" class="waves-effect waves-light">
-                
-                <i class="fa fa-fw fa-archive"></i>
-                
-                Archives
-            </a>
-        </li>
-        
-        <li>
-            <a href="/about" class="waves-effect waves-light">
-                
-                <i class="fa fa-fw fa-user-circle-o"></i>
-                
-                About
-            </a>
-        </li>
-        
-        <li>
-            <a href="/friends" class="waves-effect waves-light">
-                
-                <i class="fa fa-fw fa-address-book"></i>
-                
-                Friends
-            </a>
-        </li>
-        
-        
-        <li><div class="divider"></div></li>
-        <li>
-            <a href="https://github.com/lizixian18" class="waves-effect waves-light" target="_blank">
-                <i class="fa fa-github-square fa-fw"></i>Fork Me
-            </a>
-        </li>
-        
     </ul>
 </div>
 
-        </div>
 
         
-            <style>
-    .nav-transparent .github-corner {
-        display: none !important;
-    }
-
-    .github-corner {
-        position: absolute;
-        z-index: 10;
-        top: 0;
-        right: 0;
-        border: 0;
-        transform: scale(1.1);
-    }
-
-    .github-corner svg {
-        color: #0f9d58;
-        fill: #fff;
-        height: 64px;
-        width: 64px;
-    }
-
-    .github-corner:hover .octo-arm {
-        animation: a 0.56s ease-in-out;
-    }
-
-    .github-corner .octo-arm {
-        animation: none;
-    }
-
-    @keyframes a {
-        0%,
-        to {
-            transform: rotate(0);
-        }
-        20%,
-        60% {
-            transform: rotate(-25deg);
-        }
-        40%,
-        80% {
-            transform: rotate(10deg);
-        }
-    }
-</style>
-
-<a href="https://github.com/lizixian18" class="github-corner tooltipped hide-on-med-and-down" target="_blank" data-tooltip="Fork Me" data-position="left" data-delay="50">
-    <svg viewbox="0 0 250 250" aria-hidden="true">
-        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/>
-        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
-        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
-    </svg>
-</a>
         
-    </nav>
-
-</header>
-
-
-
-
-
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
-    <div class="container">
-        <div class="row">
-            <div class="col s12 m12 l12">
-                <div class="brand">
-                    <div class="description center-align post-title">
-                        Kotlin 代码实践
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<main class="post-container content">
-
-    
-    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
-<style>
-    #articleContent h1::before,
-    #articleContent h2::before,
-    #articleContent h3::before,
-    #articleContent h4::before,
-    #articleContent h5::before,
-    #articleContent h6::before {
-        display: block;
-        content: " ";
-        height: 100px;
-        margin-top: -100px;
-        visibility: hidden;
-    }
-
-    #articleContent :focus {
-        outline: none;
-    }
-
-    .toc-fixed {
-        position: fixed;
-        top: 64px;
-    }
-
-    .toc-widget {
-        padding-left: 20px;
-    }
-
-    .toc-widget .toc-title {
-        margin: 35px 0 15px 0;
-        padding-left: 17px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        line-height: 1.5rem;
-    }
-
-    .toc-widget ol {
-        padding: 0;
-        list-style: none;
-    }
-
-    #toc-content ol {
-        padding-left: 10px;
-    }
-
-    #toc-content ol li {
-        padding-left: 10px;
-    }
-
-    #toc-content .toc-link:hover {
-        color: #42b983;
-        font-weight: 700;
-        text-decoration: underline;
-    }
-
-    #toc-content .toc-link::before {
-        background-color: transparent;
-        max-height: 25px;
-    }
-
-    #toc-content .is-active-link {
-        color: #42b983;
-    }
-
-    #toc-content .is-active-link::before {
-        background-color: #42b983;
-    }
-</style>
-<div class="row">
-    <div class="col s12 m12 l9">
-        <!-- 文章内容详情 -->
-<div id="artDetail">
-    <div class="card">
-        <div class="card-content article-info">
-            <div class="row tag-cate">
-                <div class="col s7">
-                    
-                    <div class="article-tag">
-                        
-                            <a href="/tags/Kotlin/" target="_blank">
-                                <span class="chip bg-color">Kotlin</span>
-                            </a>
-                        
-                    </div>
-                    
-                </div>
-                <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fa fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="/categories/Kotlin/" class="post-category" target="_blank">
-                                Kotlin
-                            </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-
-            <div class="post-info">
-                <div class="post-date info-break-policy">
-                    <i class="fa fa-calendar-minus-o fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2019-02-28
-                </div>
-
-                
-				
-				
-                    <div id="busuanzi_container_page_pv" class="info-break-policy">
-                        <i class="fa fa-eye fa-fw"></i>Read Count:&nbsp;&nbsp;
-                        <span id="busuanzi_value_page_pv"></span>
-                    </div>
-				
-            </div>
-        </div>
-        <hr class="clearfix">
-        <div class="card-content article-card-content">
-            <div id="articleContent">
-                <h2 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello world!"></a>Hello world!</h2><p>让 start() 方法返回字符串 “OK”  </p>
-<p>答案  </p>
-<pre><code>fun start():String = &quot;OK&quot;
-</code></pre><h2 id="命名参数"><a href="#命名参数" class="headerlink" title="命名参数"></a>命名参数</h2><p>函数 joinToString 使用参数的默认声明：</p>
-<pre><code>//String 扩展函数
-fun joinToString(
-    separator: String = &quot;, &quot;,
-    prefix: String = &quot;&quot;,
-    postfix: String = &quot;&quot;,
-    /* ... */
-): String
-</code></pre><p>它可以在一系列字符串上调用。 仅指定两个参数使函数 joinOptions（）以JSON格式返回列表（例如，“[a，b，c]”）  </p>
-<p>答案  </p>
-<pre><code>fun joinOptions(option:Collection&lt;String&gt;) = option.joinToString(prefix=&quot;[&quot;,postfix=&quot;]&quot;)
-</code></pre><p>##默认参数<br>Java 中有几个 foo() 函数的重载：</p>
-<pre><code>public String foo(String name, int number, boolean toUpperCase) {
-    return (toUpperCase ? name.toUpperCase() : name) + number;
-}
-public String foo(String name, int number) {
-    return foo(name, number, false);
-}
-public String foo(String name, boolean toUpperCase) {
-    return foo(name, 42, toUpperCase);
-}
-public String foo(String name) {
-    return foo(name, 42);
-}
-</code></pre><p>所有这些Java重载都可以用Kotlin中的一个函数替换。 以使用foo编译的代码的方式更改函数foo的声明。 使用默认和命名参数。</p>
-<p>答案</p>
-<pre><code>fun foo(name:String,number:Int = 42,toUpperCase:Boolean = false) = 
-    if((toUpperCase)name.toUpperCase() else name)+number
-
-fun useFoo() = listOf(
-    foo(&quot;a&quot;),
-    foo(&quot;b&quot;,number = 1),
-    foo(&quot;c&quot;,toUpperCase = true),
-    foo(name = &quot;d&quot;,number = 2,toUpperCase = true)
-)
-</code></pre><h2 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h2><p>将lambda传递给任何函数以检查集合是否包含偶数。 函数any将谓词作为参数获取，如果至少有一个元素满足谓词，则返回true。</p>
-<p>答案：</p>
-<pre><code>fun containsEven(collection:Collection&lt;Int&gt;):Boolean = collection.any{
-    it % 2 ==0
-}
-</code></pre><h2 id="数据类"><a href="#数据类" class="headerlink" title="数据类"></a>数据类</h2><p>将以下Java代码重写为Kotlin：</p>
-<pre><code>public class Person {
-    private final String name;
-    private final int age;
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-}
-</code></pre><p>答案：</p>
-<pre><code>data class Person(val name:String,val age:Int)
-
-fun getPeople():List&lt;Person&gt;{
-    return listOf(Person(&quot;Alice&quot;,29),Person(&quot;Bob&quot;,31))
-}
-</code></pre><h2 id="可空类型"><a href="#可空类型" class="headerlink" title="可空类型"></a>可空类型</h2><p>阅读Kotlin中的null安全和安全调用，并仅使用一个if表达式重写以下Java代码：</p>
-<pre><code>public void sendMessageToClient(
-    @Nullable Client client,
-    @Nullable String message,
-    @NotNull Mailer mailer
-) {
-    if (client == null || message == null) return;
-
-    PersonalInfo personalInfo = client.getPersonalInfo();
-    if (personalInfo == null) return;
-
-    String email = personalInfo.getEmail();
-    if (email == null) return;
-
-    mailer.sendMessage(email, message);
-}
-</code></pre><p>答案：</p>
-<pre><code>fun sendMessageToClient(client:Client?,message:String?,mailer:Mailer){
-    val email = client?.personalInfo?.email
-    if(email!=null&amp;&amp;message!=null){
-        mailer.sendMessage(email,message)
-    }
-}
-
-class Client(val personalInfo:PersonalInfo?)
-class PersonalInfo(val email:String?)
-interface Mailer{
-    fun sendMessage(email:String,message:String)
-}
-</code></pre><h2 id="Smart-casts"><a href="#Smart-casts" class="headerlink" title="Smart casts"></a>Smart casts</h2><p>使用智能转换和表达式重写以下Java代码：</p>
-<pre><code>public int eval(Expr expr) {
-    if (expr instanceof Num) {
-        return ((Num) expr).getValue();
-    }
-    if (expr instanceof Sum) {
-        Sum sum = (Sum) expr;
-        return eval(sum.getLeft()) + eval(sum.getRight());
-    }
-    throw new IllegalArgumentException(&quot;Unknown expression&quot;);
-}
-</code></pre><p>答案：</p>
-<pre><code>fun eval(expr):Int = 
-    when(expr){
-        is Num -&gt; expr.value
-        is Sum -&gt; eval(expr.left)+eval(expr.right)
-        else -&gt; throw IllegalArgumentException(&quot;Unknown expression&quot;)
-    }
-</code></pre>
-            </div>
-            <hr>
-
             
-            <style>
-    #reward {
-        margin: 40px 0;
-        text-align: center;
-    }
-
-    #reward .reward-link {
-        font-size: 1.88rem;
-    }
-
-    #reward .btn-floating:hover {
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    #rewardModal {
-        width: 320px;
-        height: 350px;
-    }
-
-    #rewardModal .reward-title {
-        margin: 15px auto;
-        padding-bottom: 5px;
-    }
-
-    #rewardModal .modal-content {
-        padding: 10px;
-    }
-
-    #rewardModal .close {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        color: rgba(0, 0, 0, 0.5);
-        font-size: 1.3rem;
-        line-height: 20px;
-        cursor: pointer;
-    }
-
-    #rewardModal .close:hover {
-        color: #ef5350;
-        transform: scale(1.3);
-        -moz-transform:scale(1.3);
-        -webkit-transform:scale(1.3);
-        -o-transform:scale(1.3);
-    }
-
-    #rewardModal .reward-tabs {
-        margin: 0 auto;
-        width: 210px;
-    }
-
-    .reward-tabs .tabs {
-        height: 38px;
-        margin: 10px auto;
-        padding-left: 0;
-    }
-
-    .reward-content ul {
-        padding-left: 0 !important;
-    }
-
-    .reward-tabs .tabs .tab {
-        height: 38px;
-        line-height: 38px;
-    }
-
-    .reward-tabs .tab a {
-        color: #fff;
-        background-color: #ccc;
-    }
-
-    .reward-tabs .tab a:hover {
-        background-color: #ccc;
-        color: #fff;
-    }
-
-    .reward-tabs .wechat-tab .active {
-        color: #fff !important;
-        background-color: #22AB38 !important;
-    }
-
-    .reward-tabs .alipay-tab .active {
-        color: #fff !important;
-        background-color: #019FE8 !important;
-    }
-
-    .reward-tabs .reward-img {
-        width: 210px;
-        height: 210px;
-    }
-</style>
-
-<div id="reward">
-    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
-
-    <!-- Modal Structure -->
-    <div id="rewardModal" class="modal">
-        <div class="modal-content">
-            <a class="close modal-close"><i class="fa fa-close"></i></a>
-            <h4 class="reward-title">你的赏识是我前进的动力</h4>
-            <div class="reward-content">
-                <div class="reward-tabs">
-                    <ul class="tabs row">
-                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
-                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
-                    </ul>
-                    <div id="alipay">
-                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
-                    </div>
-                    <div id="wechat">
-                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    $(function () {
-        $('.tabs').tabs();
-    });
-</script>
-            
-
-            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
-
-<div id="article-share">
-    
-    <div class="social-share" data-disabled="qzone, qq, weibo, douban"></div>
-    
-</div>
-
-<script src="/libs/share/js/social-share.min.js"></script>
-
-            <div class="reprint">
-                <p>
-                    <span class="reprint-tip">
-                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;Reprint please specify:
-                    </span>
-                    <a href="https://lizixian18.github.io" class="b-link-green">Espoir</a>
-                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/2019/02/28/Kotlin 代码实践/" class="b-link-green">Kotlin 代码实践</a>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-<article id="prenext-posts" class="prev-next articles">
-    <div class="row article-row">
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;Previous</div>
-            <div class="card">
-                <a href="/2019/02/28/Hexo操作/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="Hexo 博客操作">
-                        
-                        <span class="card-title">Hexo 博客操作</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary">第一步cd 到 hexo 的目录
-第二步写文章
-第三步执行 hexo g 生成静态文件
-第四步执行 hexo clean &amp;&amp; hexo deploy 部署到 Github
-</div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-02-28
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Hexo/" class="post-category" target="_blank">
-                                    Hexo
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Hexo/" target="_blank">
-                        <span class="chip bg-color">Hexo</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fa fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2019/02/28/Kotlin 类/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="Kotlin 类">
-                        
-                        <span class="card-title">Kotlin 类</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary">类在 Kotlin 中的一个类可以有一个主构造函数以及一个或多个次构造函数。  
-主构造函数：class Person(firstName: String) { ... }
- 主构造函数不能包含任何的代码。初始化的代码可以放到以 init </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-02-28
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Kotlin/" class="post-category" target="_blank">
-                                    Kotlin
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Kotlin/" target="_blank">
-                        <span class="chip bg-color">Kotlin</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
         
     </div>
 </article>
-</div>
-
-
-    </div>
-    <div class="col l3 hide-on-med-and-down">
-        <div class="toc-widget">
-            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
-            <div id="toc-content"></div>
-        </div>
-    </div>
-</div>
-
-<script src="/libs/tocbot/tocbot.min.js"></script>
-<script>
-    $(function () {
-        tocbot.init({
-            tocSelector: '#toc-content',
-            contentSelector: '#articleContent',
-            headingsOffset: -($(window).height() * 0.4 - 45),
-            // headingsOffset: -205,
-            headingSelector: 'h2, h3, h4'
-        });
-
-        // modify the toc link href to support Chinese.
-        let i = 0;
-        let tocHeading = 'toc-heading-';
-        $('#toc-content a').each(function () {
-            $(this).attr('href', '#' + tocHeading + (++i));
-        });
-
-        // modify the heading title id to support Chinese.
-        i = 0;
-        $('#articleContent').children('h2, h3, h4').each(function () {
-            $(this).attr('id', tocHeading + (++i));
-        });
-
-        // Set scroll toc fixed.
-        let tocHeight = parseInt($(window).height() * 0.4 - 64);
-        let $tocWidget = $('.toc-widget');
-        $(window).scroll(function () {
-            let scroll = $(window).scrollTop();
-            /* add post toc fixed. */
-            if (scroll > tocHeight) {
-                $tocWidget.addClass('toc-fixed');
-            } else {
-                $tocWidget.removeClass('toc-fixed');
-            }
-        });
-    });
-</script>
-    
-
-</main>
-
-
-<footer class="page-footer bg-color">
-    <div class="container row center-align">
-        <div class="col s12 m8 l8 copy-right">
-            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
-            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
-            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
-
-            
-
-            
-			
-                <br>
-                
-                <span id="busuanzi_container_site_pv">
-                    <i class="fa fa-heart-o"></i>
-                    本站总访问量 <span id="busuanzi_value_site_pv" class="white-color"></span>
-                </span>
-                
-                
-                <span id="busuanzi_container_site_uv">
-                    <i class="fa fa-users"></i>
-                    次,&nbsp;访客数 <span id="busuanzi_value_site_uv" class="white-color"></span> 人.
-                </span>
-                
-            
-        </div>
-        <div class="col s12 m4 l4 social-link social-statis">
-
-
-    <a href="mailto:386707112@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fa fa-envelope-open"></i>
-    </a>
 
 
 
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=386707112" class="tooltipped" data-tooltip="QQ联系我: 386707112" data-position="top" data-delay="50">
-        <i class="fa fa-qq"></i>
-    </a>
-
-
-</div>
-    </div>
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Espoir. All Rights Reserved.
+    </span>
 </footer>
 
-<div class="progress-bar"></div>
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/02/28/Hexo操作/" data-tooltip="Hexo 博客操作" aria-label="FRÜHER: Hexo 博客操作">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/02/28/Kotlin 类/" data-tooltip="Kotlin 类" aria-label="NÄCHSTER: Kotlin 类">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/" title="Teilen auf Facebook">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/" title="Teilen auf Twitter">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/" title="Teilen auf Google Plus">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
 
 
-<!-- 搜索遮罩框 -->
-<div id="searchModal" class="modal">
-    <div class="modal-content">
-        <div class="search-header">
-            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</span>
-            <input type="search" id="searchInput" name="s" placeholder="Please enter a search keyword" class="search-input">
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/">
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Teilen auf Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/">
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Teilen auf Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://lizixian18.github.io/2019/02/28/Kotlin 代码实践/">
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Teilen auf Google Plus</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
         </div>
-        <div id="searchResult"></div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="http://pic4.qqmofasi.com/2014/12/01/506_uZNgKWaisBanBs19hGss_square.jpg" alt="Bild des Autors">
+        
+            <h4 id="about-card-name">Espoir</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>author.job</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                Guangzhou China
+            </div>
+        
     </div>
 </div>
 
-<script src="/js/search.js"></script>
-<script type="text/javascript">
-$(function () {
-    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
-});
-</script>
-<!-- 回到顶部按钮 -->
-<div id="backTop" class="top-scroll">
-    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
-        <i class="fa fa-angle-up"></i>
-    </a>
-</div>
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-dbd16rvloemmuxdzniplmnxxvwoz24eya9wol0b7vvmlokgqsjivmb8dnscy.min.js"></script>
+<!--SCRIPTS END-->
 
-
-<script src="/libs/materialize/materialize.min.js"></script>
-<script src="/libs/masonry/masonry.pkgd.min.js"></script>
-<script src="/libs/aos/aos.js"></script>
-<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
-<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
-<script src="/js/matery.js"></script>
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
+    
 
 
 
-    <script src="/libs/others/clicklove.js"></script>
-
-
-    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
-
-
-</body>
+    </body>
 </html>

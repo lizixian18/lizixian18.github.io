@@ -6,8 +6,10 @@
     <meta charset="utf-8">
     <meta name="keywords" content="Kotlin 代码实践, Espoir">
     <meta name="description" content="Hello world!让 start() 方法返回字符串 “OK”  
-答案1fun start():String = &amp;quot;OK&amp;quot;
-命名参数函数 joinToString 使用参数的默认声明：1234567//Strin">
+答案  
+fun start():String = &amp;quot;OK&amp;quot;
+命名参数函数 joinToString 使用参数的默认声明：
+//String 扩展">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -398,22 +400,120 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello world!"></a>Hello world!</h2><p>让 start() 方法返回字符串 “OK”  </p>
-<p>答案<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fun start():String = &quot;OK&quot;</span><br></pre></td></tr></table></figure></p>
-<h2 id="命名参数"><a href="#命名参数" class="headerlink" title="命名参数"></a>命名参数</h2><p>函数 joinToString 使用参数的默认声明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//String 扩展函数</span><br><span class="line">fun joinToString(</span><br><span class="line">    separator: String = &quot;, &quot;,</span><br><span class="line">    prefix: String = &quot;&quot;,</span><br><span class="line">    postfix: String = &quot;&quot;,</span><br><span class="line">    /* ... */</span><br><span class="line">): String</span><br></pre></td></tr></table></figure></p>
-<p>它可以在一系列字符串上调用。 仅指定两个参数使函数 joinOptions（）以JSON格式返回列表（例如，“[a，b，c]”）  </p>
-<p>答案<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fun joinOptions(option:Collection&lt;String&gt;) = option.joinToString(prefix=&quot;[&quot;,postfix=&quot;]&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>##默认参数<br>Java 中有几个 foo() 函数的重载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public String foo(String name, int number, boolean toUpperCase) &#123;</span><br><span class="line">    return (toUpperCase ? name.toUpperCase() : name) + number;</span><br><span class="line">&#125;</span><br><span class="line">public String foo(String name, int number) &#123;</span><br><span class="line">    return foo(name, number, false);</span><br><span class="line">&#125;</span><br><span class="line">public String foo(String name, boolean toUpperCase) &#123;</span><br><span class="line">    return foo(name, 42, toUpperCase);</span><br><span class="line">&#125;</span><br><span class="line">public String foo(String name) &#123;</span><br><span class="line">    return foo(name, 42);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>所有这些Java重载都可以用Kotlin中的一个函数替换。 以使用foo编译的代码的方式更改函数foo的声明。 使用默认和命名参数。</p>
-<p>答案<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fun foo(name:String,number:Int = 42,toUpperCase:Boolean = false) = </span><br><span class="line">    if((toUpperCase)name.toUpperCase() else name)+number</span><br><span class="line"></span><br><span class="line">fun useFoo() = listOf(</span><br><span class="line">    foo(&quot;a&quot;),</span><br><span class="line">    foo(&quot;b&quot;,number = 1),</span><br><span class="line">    foo(&quot;c&quot;,toUpperCase = true),</span><br><span class="line">    foo(name = &quot;d&quot;,number = 2,toUpperCase = true)</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
-<h2 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h2><p>将lambda传递给任何函数以检查集合是否包含偶数。 函数any将谓词作为参数获取，如果至少有一个元素满足谓词，则返回true。</p>
-<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fun containsEven(collection:Collection&lt;Int&gt;):Boolean = collection.any&#123;</span><br><span class="line">    it % 2 ==0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="数据类"><a href="#数据类" class="headerlink" title="数据类"></a>数据类</h2><p>将以下Java代码重写为Kotlin：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">    private final String name;</span><br><span class="line">    private final int age;</span><br><span class="line"></span><br><span class="line">    public Person(String name, int age) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">        this.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">data class Person(val name:String,val age:Int)</span><br><span class="line"></span><br><span class="line">fun getPeople():List&lt;Person&gt;&#123;</span><br><span class="line">    return listOf(Person(&quot;Alice&quot;,29),Person(&quot;Bob&quot;,31))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="可空类型"><a href="#可空类型" class="headerlink" title="可空类型"></a>可空类型</h2><p>阅读Kotlin中的null安全和安全调用，并仅使用一个if表达式重写以下Java代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public void sendMessageToClient(</span><br><span class="line">    @Nullable Client client,</span><br><span class="line">    @Nullable String message,</span><br><span class="line">    @NotNull Mailer mailer</span><br><span class="line">) &#123;</span><br><span class="line">    if (client == null || message == null) return;</span><br><span class="line"></span><br><span class="line">    PersonalInfo personalInfo = client.getPersonalInfo();</span><br><span class="line">    if (personalInfo == null) return;</span><br><span class="line"></span><br><span class="line">    String email = personalInfo.getEmail();</span><br><span class="line">    if (email == null) return;</span><br><span class="line"></span><br><span class="line">    mailer.sendMessage(email, message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">fun sendMessageToClient(client:Client?,message:String?,mailer:Mailer)&#123;</span><br><span class="line">    val email = client?.personalInfo?.email</span><br><span class="line">    if(email!=null&amp;&amp;message!=null)&#123;</span><br><span class="line">        mailer.sendMessage(email,message)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Client(val personalInfo:PersonalInfo?)</span><br><span class="line">class PersonalInfo(val email:String?)</span><br><span class="line">interface Mailer&#123;</span><br><span class="line">    fun sendMessage(email:String,message:String)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="Smart-casts"><a href="#Smart-casts" class="headerlink" title="Smart casts"></a>Smart casts</h2><p>使用智能转换和表达式重写以下Java代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public int eval(Expr expr) &#123;</span><br><span class="line">    if (expr instanceof Num) &#123;</span><br><span class="line">        return ((Num) expr).getValue();</span><br><span class="line">    &#125;</span><br><span class="line">    if (expr instanceof Sum) &#123;</span><br><span class="line">        Sum sum = (Sum) expr;</span><br><span class="line">        return eval(sum.getLeft()) + eval(sum.getRight());</span><br><span class="line">    &#125;</span><br><span class="line">    throw new IllegalArgumentException(&quot;Unknown expression&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>答案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fun eval(expr):Int = </span><br><span class="line">    when(expr)&#123;</span><br><span class="line">        is Num -&gt; expr.value</span><br><span class="line">        is Sum -&gt; eval(expr.left)+eval(expr.right)</span><br><span class="line">        else -&gt; throw IllegalArgumentException(&quot;Unknown expression&quot;)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>答案  </p>
+<pre><code>fun start():String = &quot;OK&quot;
+</code></pre><h2 id="命名参数"><a href="#命名参数" class="headerlink" title="命名参数"></a>命名参数</h2><p>函数 joinToString 使用参数的默认声明：</p>
+<pre><code>//String 扩展函数
+fun joinToString(
+    separator: String = &quot;, &quot;,
+    prefix: String = &quot;&quot;,
+    postfix: String = &quot;&quot;,
+    /* ... */
+): String
+</code></pre><p>它可以在一系列字符串上调用。 仅指定两个参数使函数 joinOptions（）以JSON格式返回列表（例如，“[a，b，c]”）  </p>
+<p>答案  </p>
+<pre><code>fun joinOptions(option:Collection&lt;String&gt;) = option.joinToString(prefix=&quot;[&quot;,postfix=&quot;]&quot;)
+</code></pre><p>##默认参数<br>Java 中有几个 foo() 函数的重载：</p>
+<pre><code>public String foo(String name, int number, boolean toUpperCase) {
+    return (toUpperCase ? name.toUpperCase() : name) + number;
+}
+public String foo(String name, int number) {
+    return foo(name, number, false);
+}
+public String foo(String name, boolean toUpperCase) {
+    return foo(name, 42, toUpperCase);
+}
+public String foo(String name) {
+    return foo(name, 42);
+}
+</code></pre><p>所有这些Java重载都可以用Kotlin中的一个函数替换。 以使用foo编译的代码的方式更改函数foo的声明。 使用默认和命名参数。</p>
+<p>答案</p>
+<pre><code>fun foo(name:String,number:Int = 42,toUpperCase:Boolean = false) = 
+    if((toUpperCase)name.toUpperCase() else name)+number
 
+fun useFoo() = listOf(
+    foo(&quot;a&quot;),
+    foo(&quot;b&quot;,number = 1),
+    foo(&quot;c&quot;,toUpperCase = true),
+    foo(name = &quot;d&quot;,number = 2,toUpperCase = true)
+)
+</code></pre><h2 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h2><p>将lambda传递给任何函数以检查集合是否包含偶数。 函数any将谓词作为参数获取，如果至少有一个元素满足谓词，则返回true。</p>
+<p>答案：</p>
+<pre><code>fun containsEven(collection:Collection&lt;Int&gt;):Boolean = collection.any{
+    it % 2 ==0
+}
+</code></pre><h2 id="数据类"><a href="#数据类" class="headerlink" title="数据类"></a>数据类</h2><p>将以下Java代码重写为Kotlin：</p>
+<pre><code>public class Person {
+    private final String name;
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+}
+</code></pre><p>答案：</p>
+<pre><code>data class Person(val name:String,val age:Int)
+
+fun getPeople():List&lt;Person&gt;{
+    return listOf(Person(&quot;Alice&quot;,29),Person(&quot;Bob&quot;,31))
+}
+</code></pre><h2 id="可空类型"><a href="#可空类型" class="headerlink" title="可空类型"></a>可空类型</h2><p>阅读Kotlin中的null安全和安全调用，并仅使用一个if表达式重写以下Java代码：</p>
+<pre><code>public void sendMessageToClient(
+    @Nullable Client client,
+    @Nullable String message,
+    @NotNull Mailer mailer
+) {
+    if (client == null || message == null) return;
+
+    PersonalInfo personalInfo = client.getPersonalInfo();
+    if (personalInfo == null) return;
+
+    String email = personalInfo.getEmail();
+    if (email == null) return;
+
+    mailer.sendMessage(email, message);
+}
+</code></pre><p>答案：</p>
+<pre><code>fun sendMessageToClient(client:Client?,message:String?,mailer:Mailer){
+    val email = client?.personalInfo?.email
+    if(email!=null&amp;&amp;message!=null){
+        mailer.sendMessage(email,message)
+    }
+}
+
+class Client(val personalInfo:PersonalInfo?)
+class PersonalInfo(val email:String?)
+interface Mailer{
+    fun sendMessage(email:String,message:String)
+}
+</code></pre><h2 id="Smart-casts"><a href="#Smart-casts" class="headerlink" title="Smart casts"></a>Smart casts</h2><p>使用智能转换和表达式重写以下Java代码：</p>
+<pre><code>public int eval(Expr expr) {
+    if (expr instanceof Num) {
+        return ((Num) expr).getValue();
+    }
+    if (expr instanceof Sum) {
+        Sum sum = (Sum) expr;
+        return eval(sum.getLeft()) + eval(sum.getRight());
+    }
+    throw new IllegalArgumentException(&quot;Unknown expression&quot;);
+}
+</code></pre><p>答案：</p>
+<pre><code>fun eval(expr):Int = 
+    when(expr){
+        is Num -&gt; expr.value
+        is Sum -&gt; eval(expr.left)+eval(expr.right)
+        else -&gt; throw IllegalArgumentException(&quot;Unknown expression&quot;)
+    }
+</code></pre>
             </div>
             <hr>
 
@@ -645,8 +745,8 @@
                 </a>
                 <div class="card-content article-content">
                     <div class="summary">类在 Kotlin 中的一个类可以有一个主构造函数以及一个或多个次构造函数。  
-主构造函数：1class Person(firstName: String) &#123; ... &#125;
- 主构造函数不能包含任何的代码。初始化的代码</div>
+主构造函数：class Person(firstName: String) { ... }
+ 主构造函数不能包含任何的代码。初始化的代码可以放到以 init </div>
                     <div class="publish-info">
                             <span class="publish-date">
                                 <i class="fa fa-clock-o fa-fw icon-date"></i>2019-02-28
